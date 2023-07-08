@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <style>
+      .container {
+        width: 1170px;
+        margin: 0 auto;
+        position: relative;
+      }
+
+      .box {
+        position: absolute;
+        background: red;
+        width: 300px;
+        height: 300px;
+        color: #fff;
+        font-size: 50px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="box" style="top: 20px; left: 30px" id="box1">box1</div>
+      <div class="box" style="height: 100px; top: 20px; left: 530px" id="box2">
+        box2
+      </div>
+      <div class="box" style="top: 1450px; left: 230px" id="box3">box3</div>
+      <div class="box" style="top: 420px; left: 630px" id="box4">box4</div>
+      <div class="box" style="top: 950px; left: 130px" id="box5">box5</div>
+    </div>
+
+    <script>
+      function getBoxRows() {
+        let boxes = document.getElementsByClassName("box");
+        let container = document.getElementsByClassName("container")[0];
+        let boxSize = [];
+        for (let i = 0; i < boxes.length; i++) {
+          let box = boxes[i];
+          let boxTop = box.offsetTop;
+          let boxHeight = box.offsetHeight;
+          let boxBottom = boxTop + boxHeight;
+          let boxID = box.id;
+          boxSize.push({ boxID, boxHeight, boxTop, boxBottom });
+        }
+        let numberofRows = boxSize.length;
+        boxSize.sort((a, b) => {
+          if (a.boxTop === b.boxTop) {
+            return a.boxBottom - b.boxBottom;
+          }
+          return a.boxTop - b.boxTop;
+        });
+        let bigbox = boxSize.reduce((prev, curr) => {
+          return curr.boxHeight > prev.boxHeight ? curr : prev;
+        });
+        let rowCounter = 1;
+        let InitialRow = {
+          id: boxSize[0].boxID,
+          start: boxSize[0].boxTop,
+          end: boxSize[0].boxBottom,
+          row_number: rowCounter,
+        };
+        let AllRows = [InitialRow];
+
+        boxSize.forEach((item, index) => {
+          if (index > 0) {
+            if (item.boxTop < InitialRow.end) {
+              // the second one is inside the first one
+              if (item.boxBottom >= InitialRow.end) {
+                InitialRow = {
+                  ...InitialRow,
+                  id: item.boxID,
+                  end: item.boxBottom,
+                };
+                AllRows.push(InitialRow);
+              } else {
+                InitialRow = {
+                  ...InitialRow,
+                  id: item.boxID,
+                  end: item.boxBottom,
+                };
+                AllRows.push(InitialRow);
+              }
+            } else {
+              // (item.boxTop > InitialRow.end) its out
+              const maxBoxBottomObject = AllRows.reduce((prev, curr) => {
+                return curr.end > prev.end ? curr : prev;
+              });
+              InitialRow = {
+                id: item.boxID,
+                start: item.boxTop,
+                end: item.boxBottom,
+                row_number: ++rowCounter,
+              };
+              AllRows.push(InitialRow);
+            }
+          }
+        });
+        AllRows = calculateBoxes(
+          AllRows,
+          bigbox.boxHeight,
+          boxSize[0].boxTop,
+          rowCounter
+        );
+        AllRows.map((item) => {
+          console.log(`${item.id} = row ${item.row_number}`);
+        });
+      }
+
+      const calculateBoxes = (AllRows, size, top, rowCounter) => {
+        // Calculate the number of boxes that can be stacked above the top height
+        let numberOfBoxes;
+        if (checkSameRowNumber(AllRows)) {
+          numberOfBoxes =
+            Math.floor(top / size) >= AllRows.length
+              ? AllRows.length
+              : Math.floor(top / size) + 1;
+          console.log("here " + numberOfBoxes);
+          console.log("here");
+          return changeRows(AllRows, numberOfBoxes);
+        }
+        return AllRows;
+      };
+      const changeRows = (obj, newNumber) => {
+        let NewObj = obj;
+        for (let i = 0; i < obj.length; i++) {
+          NewObj[i].row_number = newNumber;
+        }
+        return NewObj;
+      };
+      const checkSameRowNumber = (boxList) => {
+        // Get the row_number of the first object
+        const firstRowNumber = boxList[0].row_number;
+
+        // Iterate through the remaining objects and compare their row_number
+        for (let i = 1; i < boxList.length; i++) {
+          if (boxList[i].row_number !== firstRowNumber) {
+            return false; // Return false if row_number is different
+          }
+        }
+
+        return true; // Return true if row_number is the same for all objects
+      };
+      getBoxRows();
+    </script>
+  </body>
+</html>
