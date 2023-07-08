@@ -50,6 +50,14 @@
           }
           return a.boxTop - b.boxTop;
         });
+        boxSize.sort((a, b) => {
+          if (a.boxTop === b.boxTop) {
+            // If boxTop values are equal, sort by boxID
+            return a.boxID.localeCompare(b.boxID);
+          }
+          // Sort by boxTop
+          return a.boxTop - b.boxTop;
+        });
         let bigbox = boxSize.reduce((prev, curr) => {
           return curr.boxHeight > prev.boxHeight ? curr : prev;
         });
@@ -102,6 +110,7 @@
           boxSize[0].boxTop,
           rowCounter
         );
+
         AllRows.map((item) => {
           console.log(`${item.id} = row ${item.row_number}`);
         });
@@ -115,8 +124,7 @@
             Math.floor(top / size) >= AllRows.length
               ? AllRows.length
               : Math.floor(top / size) + 1;
-          console.log("here " + numberOfBoxes);
-          console.log("here");
+
           return changeRows(AllRows, numberOfBoxes);
         }
         return AllRows;
