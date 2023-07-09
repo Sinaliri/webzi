@@ -22,7 +22,7 @@
   <body>
     <div class="container">
       <div class="box" style="top: 20px; left: 30px" id="box1">box1</div>
-      <div class="box" style="height: 100px; top: 20px; left: 530px" id="box2">
+      <div class="box" style="height: 2100px; top: 20px; left: 530px" id="box2">
         box2
       </div>
       <div class="box" style="top: 1450px; left: 230px" id="box3">box3</div>
@@ -69,11 +69,8 @@
           row_number: rowCounter,
         };
         let AllRows = [InitialRow];
-        console.log(InitialRow);
-        console.log(boxSize);
         boxSize.forEach((item, index) => {
           if (index > 0) {
-            console.log(index);
             if (item.boxTop < InitialRow.end) {
               // the second one is inside the first one
               if (item.boxBottom >= InitialRow.end) {
@@ -111,7 +108,6 @@
           boxSize[0].boxTop,
           rowCounter
         );
-        console.log(AllRows);
         AllRows.map((item) => {
           console.log(`${item.id} = row ${item.row_number}`);
         });
@@ -121,7 +117,6 @@
         // Calculate the number of boxes that can be stacked above the top height
         let numberOfBoxes;
         if (checkSameRowNumber(AllRows)) {
-          console.log("here");
           numberOfBoxes =
             Math.floor(top / size) >= AllRows.length
               ? AllRows.length
