@@ -46,7 +46,7 @@
         let numberofRows = boxSize.length;
         boxSize.sort((a, b) => {
           if (a.boxTop === b.boxTop) {
-            return a.boxBottom - b.boxBottom;
+            return b.boxBottom - a.boxBottom;
           }
           return a.boxTop - b.boxTop;
         });
@@ -69,9 +69,11 @@
           row_number: rowCounter,
         };
         let AllRows = [InitialRow];
-
+        console.log(InitialRow);
+        console.log(boxSize);
         boxSize.forEach((item, index) => {
           if (index > 0) {
+            console.log(index);
             if (item.boxTop < InitialRow.end) {
               // the second one is inside the first one
               if (item.boxBottom >= InitialRow.end) {
@@ -85,7 +87,6 @@
                 InitialRow = {
                   ...InitialRow,
                   id: item.boxID,
-                  end: item.boxBottom,
                 };
                 AllRows.push(InitialRow);
               }
@@ -110,7 +111,7 @@
           boxSize[0].boxTop,
           rowCounter
         );
-
+        console.log(AllRows);
         AllRows.map((item) => {
           console.log(`${item.id} = row ${item.row_number}`);
         });
@@ -120,6 +121,7 @@
         // Calculate the number of boxes that can be stacked above the top height
         let numberOfBoxes;
         if (checkSameRowNumber(AllRows)) {
+          console.log("here");
           numberOfBoxes =
             Math.floor(top / size) >= AllRows.length
               ? AllRows.length
